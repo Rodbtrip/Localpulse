@@ -24,6 +24,10 @@ functions (Stripe webhook, redeem-offer).
 Apply the schema and migrations to your Supabase project in order, starting with
 `schema.sql`. See `backend/README-ORIGINAL.md` and `backend/CHANGES.md` for details.
 
+## `website/` — Marketing site
+Static landing page (`index.html`) for LocalPulse. Open the file directly or
+serve the folder with any static host.
+
 ## Environment
 
 Copy the `.env.example` files and provide your own credentials. **Never commit
