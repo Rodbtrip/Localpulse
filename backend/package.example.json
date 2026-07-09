@@ -1,0 +1,19 @@
+{
+  "name": "coffeeconnect-os",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CoffeeConnect OS - growth platform for independent coffee shops",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "turbo": "latest",
+    "typescript": "latest",
+    "eslint": "latest",
+    "prettier": "latest"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
