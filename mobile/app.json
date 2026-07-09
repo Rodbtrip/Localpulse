@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "LocalPulse",
+    "slug": "localpulse",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "localpulse",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FAF7F2",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAF7F2"
+    },
+    "ios": {
+      "bundleIdentifier": "com.ascensiongroup.localpulse",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "LocalPulse uses your location to show offers from businesses near you."
+      }
+    },
+    "android": {
+      "package": "com.ascensiongroup.localpulse",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FAF7F2"
+      }
+    },
+    "icon": "./assets/icon.png"
+  }
+}

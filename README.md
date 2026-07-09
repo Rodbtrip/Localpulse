@@ -24,6 +24,17 @@ functions (Stripe webhook, redeem-offer).
 Apply the schema and migrations to your Supabase project in order, starting with
 `schema.sql`. See `backend/README-ORIGINAL.md` and `backend/CHANGES.md` for details.
 
+## `mobile/` — Mobile app
+Expo / React Native app (`localpulse-mobile`) with owner and customer flows,
+Supabase integration, legal docs, and the Pip assistant.
+
+```bash
+cd mobile
+cp .env.example .env   # fill in your Supabase keys
+npm install
+npx expo start
+```
+
 ## `website/` — Marketing site
 Static landing page (`index.html`) for LocalPulse. Open the file directly or
 serve the folder with any static host.
