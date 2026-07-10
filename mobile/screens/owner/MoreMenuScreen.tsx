@@ -26,7 +26,7 @@ export default function MoreMenuScreen() {
   return (
     <View style={styles.shell}>
       {ITEMS.map((item) => (
-        <Pressable key={item.screen} style={styles.row} onPress={() => navigation.navigate(item.screen as any, item.params as any)}>
+        <Pressable key={item.label} style={styles.row} onPress={() => navigation.navigate(item.screen as any, item.params as any)}>
           <View style={{ flex: 1 }}>
             <Text style={styles.rowTitle}>{item.label}</Text>
             <Text style={styles.rowMeta}>{item.meta}</Text>
