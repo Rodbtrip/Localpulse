@@ -11,8 +11,10 @@
 // to destroy it while a card is still being charged every month.
 //
 //   1. Verify the caller's JWT (users can only ever delete themselves).
-//   2. Cancel any active Stripe subscription. Abort on failure.
-//   3. Take the owned shop offline (is_active = false) so listings vanish
+//   2. Cancel every billable Stripe subscription across ALL of the caller's
+//      shops (owner_id is not unique — one owner can have several shops).
+//      Abort on any failure.
+//   3. Take the owned shops offline (is_active = false) so listings vanish
 //      immediately even if a later step is interrupted.
 //   4. Delete the profiles row (personal data).
 //   5. Delete the auth user via the admin API.
@@ -48,8 +50,6 @@ async function cancelStripeSubscription(subscriptionId: string): Promise<string 
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/x-www-form-urlencoded",
-      // Safe to retry: Stripe collapses duplicate calls with the same key.
-      "Idempotency-Key": `delete-account:${subscriptionId}`,
     },
   });
 
@@ -64,6 +64,27 @@ async function cancelStripeSubscription(subscriptionId: string): Promise<string 
     if (body?.error?.code === "resource_missing") return null;
   } catch {
     /* keep the status-code fallback */
+  }
+
+  // Cancelling a subscription that is already terminal (e.g. cancelled from
+  // the Stripe dashboard while our local status row is stale) fails with
+  // HTTP 400, not 404. Before treating that as a hard failure, fetch the
+  // subscription: if Stripe itself reports a terminal status, it can no
+  // longer bill and there is nothing left to cancel. Anything else — a
+  // still-billable status, or a verification fetch that fails — stays a
+  // failure, because we could not confirm billing has stopped.
+  try {
+    const check = await fetch(`https://api.stripe.com/v1/subscriptions/${subscriptionId}`, {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    if (check.ok) {
+      const sub = await check.json();
+      if (sub?.status === "canceled" || sub?.status === "incomplete_expired") {
+        return null;
+      }
+    }
+  } catch {
+    /* verification unavailable — report the original cancellation error */
   }
   return `Your subscription could not be cancelled (${detail}). Nothing was deleted.`;
 }
@@ -97,19 +118,35 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // 2. Cancel billing BEFORE destroying anything.
-    const { data: shop } = await admin
+    // 2. Cancel billing BEFORE destroying anything. owner_id is not unique,
+    // so an owner can have several shops — every one of them must be checked.
+    const { data: shops, error: shopsErr } = await admin
       .from("shops")
       .select("id")
-      .eq("owner_id", user.id)
-      .maybeSingle();
+      .eq("owner_id", user.id);
+    if (shopsErr) {
+      // Never delete an account whose billing could not even be checked.
+      return json(
+        { error: "Could not look up your shops to cancel billing. Nothing was deleted." },
+        500,
+      );
+    }
 
-    if (shop) {
-      const { data: sub } = await admin
+    // First pass: cancel every billable subscription at Stripe. Abort before
+    // any data is modified if a lookup or cancellation fails.
+    const cancelledShopIds: string[] = [];
+    for (const shop of shops ?? []) {
+      const { data: sub, error: subErr } = await admin
         .from("subscriptions")
         .select("stripe_subscription_id, status")
         .eq("shop_id", shop.id)
         .maybeSingle();
+      if (subErr) {
+        return json(
+          { error: "Could not look up your subscription to cancel billing. Nothing was deleted." },
+          500,
+        );
+      }
 
       if (sub?.stripe_subscription_id && BILLABLE.has(sub.status)) {
         const failure = await cancelStripeSubscription(sub.stripe_subscription_id);
@@ -117,13 +154,19 @@ Deno.serve(async (req) => {
           // Abort. An account that still bills is worse than one that still exists.
           return json({ error: failure }, 409);
         }
+        cancelledShopIds.push(shop.id);
+      }
+    }
+
+    // 3. All Stripe cancellations succeeded — record them, and take listings
+    // offline immediately so they vanish even if a later step is interrupted.
+    for (const shop of shops ?? []) {
+      if (cancelledShopIds.includes(shop.id)) {
         await admin
           .from("subscriptions")
           .update({ status: "canceled" })
           .eq("shop_id", shop.id);
       }
-
-      // 3. Listings offline immediately.
       await admin.from("shops").update({ is_active: false }).eq("id", shop.id);
     }
 

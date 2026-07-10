@@ -63,7 +63,7 @@ export function PipAssistant({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
-  const listRef = useRef<FlatList>(null);
+  const listRef = useRef<FlatList<Message>>(null);
 
   useEffect(() => {
     if (visible && messages.length === 0) {
@@ -118,7 +118,7 @@ export function PipAssistant({
               </Pressable>
             </View>
 
-            <FlatList
+            <FlatList<Message>
               ref={listRef}
               data={messages}
               keyExtractor={(m) => m.id}

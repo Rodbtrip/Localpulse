@@ -22,7 +22,10 @@ Deno.serve(async (req) => {
     return new Response('Invalid shop id', { status: 400 });
   }
 
-  const size = Math.min(Math.max(Number(url.searchParams.get('size') ?? 512), 128), 2048);
+  // Garbage input (e.g. ?size=abc) parses to NaN, which would slip through
+  // the clamp below — fall back to the default before clamping.
+  const requested = Number(url.searchParams.get('size') ?? 512);
+  const size = Math.min(Math.max(Number.isFinite(requested) ? requested : 512, 128), 2048);
 
   try {
     const dataUrl: string = await QRCode.toDataURL(`${SCAN_BASE_URL}/${shop}`, {
