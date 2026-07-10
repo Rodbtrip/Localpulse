@@ -7,6 +7,7 @@ import { signOut } from '../../lib/api';
 const ITEMS = [
   { label: 'Referrals', meta: 'Share your link, earn free months', screen: 'Referrals', params: undefined },
   { label: 'Billing', meta: 'Subscription, deactivation & account', screen: 'Billing', params: undefined },
+  { label: 'QR Code', meta: 'Print it for your counter — customers scan to find you', screen: 'QRCode', params: undefined },
   { label: 'Terms of Service', meta: 'The agreement that governs LocalPulse', screen: 'Legal', params: { doc: 'terms' } },
   { label: 'Privacy Policy', meta: 'What we collect and how it is used', screen: 'Legal', params: { doc: 'privacy' } },
   { label: 'Contest Rules', meta: 'Official Deal Contest rules', screen: 'Legal', params: { doc: 'contest' } },

@@ -13,14 +13,14 @@
       "backgroundColor": "#FAF7F2"
     },
     "ios": {
-      "bundleIdentifier": "com.ascensiongroup.localpulse",
+      "bundleIdentifier": "com.localpulse.app",
       "supportsTablet": false,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "LocalPulse uses your location to show offers from businesses near you."
       }
     },
     "android": {
-      "package": "com.ascensiongroup.localpulse",
+      "package": "com.localpulse.app",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"

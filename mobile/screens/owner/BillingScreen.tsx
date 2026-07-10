@@ -59,7 +59,7 @@ export default function BillingScreen() {
   function confirmDelete() {
     Alert.alert(
       'Delete your account permanently?',
-      'This cannot be undone. Your login and personal data are removed and your business goes offline. Important: deleting your account does NOT cancel your Stripe subscription — cancel it first under Manage subscription.',
+      'This cannot be undone. Your subscription is cancelled immediately, your business goes offline, and your login and personal data are removed. If the cancellation fails, nothing is deleted and you can try again.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -139,7 +139,8 @@ export default function BillingScreen() {
       <Card style={styles.dangerCard}>
         <Text style={styles.acctTitle}>Delete my account</Text>
         <Text style={styles.acctBody}>
-          Permanently removes your login and personal data. This cannot be undone. Cancel your Stripe subscription first.
+          Cancels your subscription, takes your business offline, and permanently removes your login and personal data.
+          This cannot be undone.
         </Text>
         <Button title="Delete my account…" secondary onPress={confirmDelete} disabled={busy} />
       </Card>

@@ -609,3 +609,27 @@ export async function deleteMyAccount() {
   }
   await supabase.auth.signOut();
 }
+
+
+// ---------- QR / scan link ----------
+
+// The public landing page a printed QR code points at. It resolves to the
+// shop's offers, and forwards to the App Store / Play Store if the visitor
+// doesn't have the app yet.
+export const SCAN_BASE_URL = 'https://localpulse.app/s';
+
+export function shopScanUrl(shopId: string) {
+  return `${SCAN_BASE_URL}/${shopId}`;
+}
+
+// ---------- Welcome email ----------
+
+// Fired once, right after an owner's account exists. The Edge Function
+// builds the email (including an <img> pointing at the qr-code function)
+// and hands it to the email provider. Safe to call more than once — the
+// function is idempotent per shop.
+export async function sendWelcomeEmail() {
+  const { data, error } = await supabase.functions.invoke('send-welcome-email', { body: {} });
+  if (error) throw error;
+  return data;
+}

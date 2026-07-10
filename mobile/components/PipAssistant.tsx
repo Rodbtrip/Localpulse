@@ -46,6 +46,7 @@ interface Message {
   from: 'pip' | 'user';
   text: string;
   hits?: PipDealHit[];
+  suggestions?: string[];
 }
 
 export function PipAssistant({
@@ -78,7 +79,10 @@ export function PipAssistant({
     setThinking(true);
     try {
       const reply = await askPip(q, mode);
-      setMessages((m) => [...m, { id: `p${Date.now()}`, from: 'pip', text: reply.text, hits: reply.hits }]);
+      setMessages((m) => [
+        ...m,
+        { id: `p${Date.now()}`, from: 'pip', text: reply.text, hits: reply.hits, suggestions: reply.suggestions },
+      ]);
     } catch {
       setMessages((m) => [
         ...m,
@@ -132,6 +136,16 @@ export function PipAssistant({
                         <Text style={styles.hitOpen}>View shop ›</Text>
                       </Pressable>
                     ))}
+                    {/* When Pip redirects an off-topic question, it offers a way back in. */}
+                    {item.suggestions && (
+                      <View style={styles.inlineChips}>
+                        {item.suggestions.map((s) => (
+                          <Pressable key={s} style={styles.chip} onPress={() => send(s)}>
+                            <Text style={styles.chipText}>{s}</Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    )}
                   </View>
                 </View>
               )}
@@ -220,6 +234,7 @@ const styles = StyleSheet.create({
   hitOpen: { fontFamily: fonts.bodySemi, fontSize: 11.5, color: colors.coral, marginTop: 6 },
   thinking: { fontFamily: fonts.body, fontSize: 12, color: colors.inkFaint, paddingLeft: 20, paddingBottom: 8 },
   chipsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, paddingHorizontal: 16, paddingTop: 8 },
+  inlineChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 },
   chip: {
     borderWidth: 1,
     borderColor: 'rgba(23,27,26,0.18)',
