@@ -1,11 +1,11 @@
 LOCALPULSE DEAL CONTEST — OFFICIAL RULES
-Last updated: July 8, 2026
+Last updated: July 9, 2026
 
 ⚠️ THESE RULES REQUIRE ATTORNEY REVIEW BEFORE ANY CONTEST RUNS. Prize promotions are regulated as sweepstakes or contests under state law, with state-specific registration, bonding, and disclosure requirements. Do not launch without counsel's sign-off.
 
 NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE DOES NOT INCREASE YOUR CHANCES OF WINNING. VOID WHERE PROHIBITED.
 
-1. SPONSOR AND ADMINISTRATOR. Each Deal Contest is sponsored by the individual business that configures it (the "Sponsor"), which is solely responsible for the prize it states. [ASCENSION GROUP LLC / ENTITY NAME] ("LocalPulse") administers the contest mechanics through the LocalPulse platform.
+1. SPONSOR AND ADMINISTRATOR. Each Deal Contest is sponsored by the individual business that configures it (the "Sponsor"), which is solely responsible for the prize it states. [LEGAL ENTITY NAME] ("LocalPulse") administers the contest mechanics through the LocalPulse platform.
 
 2. ELIGIBILITY. Open to LocalPulse members who are 18 years or older (or the age of majority in their state) at the time of entry. Employees and owners of the Sponsor, and their immediate household members, are not eligible to win that Sponsor's contest. Contests are void where prohibited or restricted by law.
 
@@ -25,4 +25,4 @@ NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE DOES NOT INCREASE YOUR CHANCES
 
 10. DISPUTES. [ATTORNEY TO CONFIRM: governing law, venue/arbitration, state-specific sweepstakes registration (e.g., NY, FL) and any prize-value thresholds, and required disclosures.]
 
-11. SPONSOR / ADMINISTRATOR CONTACT. Sponsor: the business named in the contest listing. Administrator: [ASCENSION GROUP LLC / ENTITY NAME], [BUSINESS ADDRESS], [LEGAL CONTACT EMAIL].
+11. SPONSOR / ADMINISTRATOR CONTACT. Sponsor: the business named in the contest listing. Administrator: [LEGAL ENTITY NAME], [BUSINESS ADDRESS], [LEGAL CONTACT EMAIL].

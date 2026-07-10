@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFonts, SpaceGrotesk_600SemiBold, SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import { JetBrainsMono_600SemiBold } from '@expo-google-fonts/jetbrains-mono';
@@ -26,6 +27,7 @@ import RedeemScreen from './screens/owner/RedeemScreen';
 import ReferralsScreen from './screens/owner/ReferralsScreen';
 import BillingScreen from './screens/owner/BillingScreen';
 import MoreMenuScreen from './screens/owner/MoreMenuScreen';
+import QRCodeScreen from './screens/owner/QRCodeScreen';
 import LegalScreen, { legalTitle } from './screens/shared/LegalScreen';
 
 export type AuthStackParams = {
@@ -47,6 +49,11 @@ const CustomerTabs = createBottomTabNavigator();
 const OwnerTabs = createBottomTabNavigator();
 const OwnerMoreStack = createNativeStackNavigator();
 
+// Unselected tab labels sit on the dark navy bar, so they need a light,
+// muted tone (not the dark `inkFaint`, which was invisible on navy).
+// Coral is reserved for the focused tab so the active section pops.
+const TAB_INACTIVE = 'rgba(255, 255, 255, 0.6)';
+
 const navTheme = {
   ...DefaultTheme,
   colors: { ...DefaultTheme.colors, background: colors.paper, primary: colors.coral },
@@ -58,6 +65,20 @@ const headerStyle = {
   headerTitleStyle: { fontFamily: fonts.display, color: colors.ink },
   headerTintColor: colors.coral,
 } as const;
+
+// Builds a tab-bar style that respects each device's bottom safe-area inset
+// (home indicator / gesture bar) so the bar fits every current iPhone and
+// Android phone instead of a hardcoded height.
+function useTabBarStyle() {
+  const insets = useSafeAreaInsets();
+  return {
+    backgroundColor: colors.navy,
+    borderTopColor: colors.navy,
+    height: 58 + insets.bottom,
+    paddingTop: 6,
+    paddingBottom: Math.max(insets.bottom, 8),
+  } as const;
+}
 
 function ExploreFlow() {
   return (
@@ -78,11 +99,12 @@ function ExploreFlow() {
 }
 
 function CustomerApp() {
+  const tabBarStyle = useTabBarStyle();
   return (
     <CustomerTabs.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: colors.navy, borderTopColor: colors.navy, height: 62, paddingTop: 6 },
+        tabBarStyle,
         tabBarIcon: () => null,
         tabBarLabelPosition: 'below-icon',
       }}
@@ -107,6 +129,7 @@ function OwnerMore() {
       <OwnerMoreStack.Screen name="MoreMenu" component={MoreMenuScreen} options={{ title: 'More' }} />
       <OwnerMoreStack.Screen name="Referrals" component={ReferralsScreen} />
       <OwnerMoreStack.Screen name="Billing" component={BillingScreen} />
+      <OwnerMoreStack.Screen name="QRCode" component={QRCodeScreen} options={{ title: 'Your QR code' }} />
       <OwnerMoreStack.Screen
         name="Legal"
         component={LegalScreen as any}
@@ -119,10 +142,11 @@ function OwnerMore() {
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return (
     <Text
+      numberOfLines={1}
       style={{
         fontFamily: focused ? fonts.bodySemi : fonts.bodyMedium,
         fontSize: 10.5,
-        color: focused ? colors.coral : colors.inkFaint,
+        color: focused ? colors.coral : TAB_INACTIVE,
       }}
     >
       {label}
@@ -131,11 +155,12 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
 }
 
 function OwnerApp() {
+  const tabBarStyle = useTabBarStyle();
   return (
     <OwnerTabs.Navigator
       screenOptions={{
         ...headerStyle,
-        tabBarStyle: { backgroundColor: colors.navy, borderTopColor: colors.navy, height: 62, paddingTop: 6 },
+        tabBarStyle,
         tabBarIcon: () => null,
         tabBarLabelPosition: 'below-icon',
       }}
@@ -207,32 +232,38 @@ export default function App() {
   }, []);
 
   if (!fontsLoaded || !ready) {
-    return <View style={{ flex: 1, backgroundColor: colors.navy }} />;
+    return (
+      <SafeAreaProvider>
+        <View style={{ flex: 1, backgroundColor: colors.navy }} />
+      </SafeAreaProvider>
+    );
   }
 
   return (
-    <NavigationContainer theme={navTheme}>
-      <StatusBar style="dark" backgroundColor={colors.paper} />
-      {!session ? (
-        <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-          <AuthStack.Screen name="RoleSelect" component={RoleSelectScreen} />
-          <AuthStack.Screen name="SignIn" component={SignInScreen} />
-          <AuthStack.Screen name="SignUp" component={SignUpScreen} />
-          <AuthStack.Screen
-            name="Legal"
-            component={LegalScreen as any}
-            options={({ route }) => ({
-              headerShown: true,
-              ...headerStyle,
-              title: legalTitle((route.params as any).doc),
-            })}
-          />
-        </AuthStack.Navigator>
-      ) : role === 'owner' ? (
-        <OwnerApp />
-      ) : (
-        <CustomerApp />
-      )}
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer theme={navTheme}>
+        <StatusBar style="dark" backgroundColor={colors.paper} />
+        {!session ? (
+          <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+            <AuthStack.Screen name="RoleSelect" component={RoleSelectScreen} />
+            <AuthStack.Screen name="SignIn" component={SignInScreen} />
+            <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+            <AuthStack.Screen
+              name="Legal"
+              component={LegalScreen as any}
+              options={({ route }) => ({
+                headerShown: true,
+                ...headerStyle,
+                title: legalTitle((route.params as any).doc),
+              })}
+            />
+          </AuthStack.Navigator>
+        ) : role === 'owner' ? (
+          <OwnerApp />
+        ) : (
+          <CustomerApp />
+        )}
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

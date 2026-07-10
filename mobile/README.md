@@ -60,6 +60,36 @@ Pip (the LocalPulse pin as a mascot) is a working assistant, not decoration. The
 
 Everything runs on-device against Supabase — no external AI calls, no API keys, nothing to configure. The engine lives in `lib/pip.ts` (synonym map, tokenizer, ranking, FAQ intents) and the UI in `components/PipAssistant.tsx`; the mascot asset is `assets/pip.png`. When you're ready, the same component can be upgraded to a full conversational assistant on the Claude API without changing where it lives in the app.
 
+## Pip's expanded brain
+
+`lib/pip.ts` now carries 55 knowledge intents and 203 category synonyms across 23 verticals, with plural folding, one-edit typo tolerance ("cofee" → coffee), multi-word phrase matching ("happy hour" → bars), and free word order. Because matching is keyword-based rather than phrase-lookup, the set of accepted inputs isn't a fixed list — any phrasing containing a recognized term resolves.
+
+Three behaviors worth knowing:
+- **Off-topic questions get redirected, never guessed at.** Ask about the capital of France and Pip says it's outside its map, then offers something the app can actually do. Redirects rotate so repeated off-topic questions don't produce identical replies.
+- **Creative/task requests are caught before deal search.** "Write me a poem about dogs" doesn't become a search for dog-grooming offers.
+- **Sensitive topics get a real answer.** Self-harm language returns crisis resources, not a deflection. Medical, legal, and financial advice is declined and redirected.
+
+## QR codes & the welcome email
+
+Owners get a printable QR code under **More → QR Code**, rendered as SVG so it stays sharp at any print size. It encodes `https://localpulse.app/s/<shopId>` — scanning it lands a customer on that shop's offers, or sends them to download the app first.
+
+The same code is embedded in a **welcome-aboard email**, sent once when an owner first creates their business profile. Two Edge Functions back it:
+- `supabase/functions/qr-code/` — renders a shop's QR as a PNG. Deploy with `--no-verify-jwt` (email clients fetch it as a plain `<img>`, unauthenticated). It only ever encodes a validated UUID, never arbitrary input.
+- `supabase/functions/send-welcome-email/` — builds the email and hands it to Resend. Idempotent per shop.
+
+Setup:
+```bash
+supabase secrets set RESEND_API_KEY=re_xxx
+supabase secrets set PUBLIC_FUNCTIONS_URL=https://<project>.supabase.co/functions/v1
+supabase functions deploy qr-code --no-verify-jwt
+supabase functions deploy send-welcome-email
+```
+And one migration:
+```sql
+alter table shops add column if not exists welcome_email_sent_at timestamptz;
+```
+Until deployed, the app fails silently on the email (by design — a failed email must never block a business from saving its profile).
+
 ## Legal documents & account deletion
 
 **Documents.** Three drafts ship in the app and as markdown (`legal/` folder): Terms of Service, Privacy Policy, and Deal Contest Official Rules. They are readable in-app from: sign-up (agreement links), the owner More menu, the Billing screen footer, and the member My Offers footer. ⚠️ **These are attorney-review drafts** — every [BRACKETED] placeholder (entity name, address, state, contact emails, arbitration language) must be completed and the whole set reviewed by counsel before launch. The Contest Rules especially: prize promotions are regulated under state sweepstakes law (registration/bonding in some states) — this remains the flagged launch blocker.
@@ -67,7 +97,14 @@ Everything runs on-device against Supabase — no external AI calls, no API keys
 **Deactivation & deletion.**
 - Owners (More → Billing → Account): "Take my business offline" instantly hides all listings (reversible with one tap), and "Delete my account" permanently removes the login and personal data after a double confirmation. The screen warns that Stripe subscriptions must be cancelled separately.
 - Members (My Offers → Account): "Delete my account" with the same double confirmation.
-- Permanent deletion runs through a new **`delete-account` Edge Function** (in `supabase/functions/delete-account/`) — the only safe way to remove an auth user, since it requires the service role. Deploy it once with `supabase functions deploy delete-account`. Until deployed, the app shows a clear fallback message instead of failing silently. Review your foreign-key ON DELETE behavior so activity records (claims, votes, suggestions) end up retained or removed in line with the Privacy Policy.
+- Permanent deletion runs through the **`delete-account` Edge Function** (in `supabase/functions/delete-account/`) — the only safe way to remove an auth user, since it requires the service role. It **cancels any active Stripe subscription before it destroys anything**, and aborts the whole deletion if that cancellation fails: an account that still bills is worse than one that still exists. Cancellation is immediate (not at period end), treats an already-cancelled subscription as success, and sends an idempotency key so a retry can't double-cancel.
+
+  ```bash
+  supabase secrets set STRIPE_SECRET_KEY=sk_live_xxx
+  supabase functions deploy delete-account
+  ```
+
+  Until deployed, the app shows a clear fallback message instead of failing silently. Review your foreign-key ON DELETE behavior so activity records (claims, votes, suggestions) end up retained or removed in line with the Privacy Policy.
 
 In-app account deletion is an App Store requirement (Guideline 5.1.1) for any app with account creation — this implementation satisfies it.
 

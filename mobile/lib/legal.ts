@@ -18,7 +18,7 @@ export const LEGAL_TITLES: Record<LegalDocKey, string> = {
 export const TERMS_OF_SERVICE = `LOCALPULSE TERMS OF SERVICE
 Last updated: ${LEGAL_LAST_UPDATED}
 
-These Terms of Service ("Terms") are a binding agreement between you and [ASCENSION GROUP LLC / LEGAL ENTITY NAME] ("LocalPulse," "we," "us"), governing your use of the LocalPulse mobile application, website, and related services (together, the "Services"). By creating an account or using the Services, you agree to these Terms and to our Privacy Policy. If you do not agree, do not use the Services.
+These Terms of Service ("Terms") are a binding agreement between you and [LEGAL ENTITY NAME] ("LocalPulse," "we," "us"), governing your use of the LocalPulse mobile application, website, and related services (together, the "Services"). By creating an account or using the Services, you agree to these Terms and to our Privacy Policy. If you do not agree, do not use the Services.
 
 1. WHO MAY USE LOCALPULSE
 You must be at least 18 years old (or the age of majority where you live) to create an account. By using the Services you represent that you meet this requirement and that any information you provide is accurate. You are responsible for your account credentials and for all activity under your account.
@@ -36,7 +36,7 @@ Businesses may run suggestion contests in which members submit deal ideas, the b
 Business subscriptions are billed at the rate shown at sign-up (currently $[49] per month) through our payment processor, Stripe, and renew automatically each billing period until cancelled. You may cancel at any time; cancellation takes effect at the end of the current billing period and no partial-period refunds are provided except where required by law. Referral credits (one free month per referred business that subscribes) are applied automatically, are non-transferable, and have no cash value. Payment is handled on the web; app store billing is not used for subscriptions.
 
 6. ACCOUNT DEACTIVATION AND DELETION
-You may deactivate or permanently delete your account at any time from within the app (Members: My Offers → Account. Business owners: More → Billing → Account). Deactivating a business takes its listings offline; deleting an account permanently removes your login and personal data as described in the Privacy Policy. Deleting a business account does not by itself cancel a Stripe subscription — cancel your subscription first, or contact us and we will confirm cancellation. Outstanding claimed codes and awarded prizes may be voided upon deletion.
+You may deactivate or permanently delete your account at any time from within the app (Members: My Offers → Account. Business owners: More → Billing → Account). Deactivating a business takes its listings offline; deleting an account permanently removes your login and personal data as described in the Privacy Policy. Deleting a business account cancels any active subscription immediately as part of the deletion. If that cancellation cannot be completed, the deletion is halted and nothing is removed. Outstanding claimed codes and awarded prizes may be voided upon deletion.
 
 7. YOUR CONTENT
 When you submit content (suggestions, business descriptions, and similar), you keep ownership of it, and you grant LocalPulse and, for suggestions, the receiving business a worldwide, royalty-free license to use, display, reproduce, and adapt that content to operate and promote the Services — including implementing a winning suggestion as a promotion. You represent that your content is yours to share and does not violate any law or right of another person.
@@ -66,14 +66,14 @@ These Terms are governed by the laws of the State of [STATE], without regard to 
 We may update these Terms; material changes will be notified in the app, and continued use after the effective date constitutes acceptance. We may suspend or end the Services or your access to them for violation of these Terms or where required by law.
 
 16. CONTACT
-[ASCENSION GROUP LLC / ENTITY NAME]
+[LEGAL ENTITY NAME]
 [BUSINESS ADDRESS]
 [hello@localpulse.com]`;
 
 export const PRIVACY_POLICY = `LOCALPULSE PRIVACY POLICY
 Last updated: ${LEGAL_LAST_UPDATED}
 
-This Privacy Policy explains how [ASCENSION GROUP LLC / LEGAL ENTITY NAME] ("LocalPulse," "we") collects, uses, and shares information when you use our app, website, and services.
+This Privacy Policy explains how [LEGAL ENTITY NAME] ("LocalPulse," "we") collects, uses, and shares information when you use our app, website, and services.
 
 1. INFORMATION WE COLLECT
 • Account information: your name, email address, password (stored as a secure hash by our infrastructure provider), and account role (member or business owner).
@@ -111,7 +111,7 @@ We use industry-standard safeguards, including encrypted connections, hashed cre
 We will post updates to this policy in the app and update the date above; material changes will be highlighted.
 
 10. CONTACT
-[ASCENSION GROUP LLC / ENTITY NAME] · [BUSINESS ADDRESS] · [PRIVACY CONTACT EMAIL]`;
+[LEGAL ENTITY NAME] · [BUSINESS ADDRESS] · [PRIVACY CONTACT EMAIL]`;
 
 export const CONTEST_RULES = `LOCALPULSE DEAL CONTEST — OFFICIAL RULES
 Last updated: ${LEGAL_LAST_UPDATED}
@@ -120,7 +120,7 @@ Last updated: ${LEGAL_LAST_UPDATED}
 
 NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE DOES NOT INCREASE YOUR CHANCES OF WINNING. VOID WHERE PROHIBITED.
 
-1. SPONSOR AND ADMINISTRATOR. Each Deal Contest is sponsored by the individual business that configures it (the "Sponsor"), which is solely responsible for the prize it states. [ASCENSION GROUP LLC / ENTITY NAME] ("LocalPulse") administers the contest mechanics through the LocalPulse platform.
+1. SPONSOR AND ADMINISTRATOR. Each Deal Contest is sponsored by the individual business that configures it (the "Sponsor"), which is solely responsible for the prize it states. [LEGAL ENTITY NAME] ("LocalPulse") administers the contest mechanics through the LocalPulse platform.
 
 2. ELIGIBILITY. Open to LocalPulse members who are 18 years or older (or the age of majority in their state) at the time of entry. Employees and owners of the Sponsor, and their immediate household members, are not eligible to win that Sponsor's contest. Contests are void where prohibited or restricted by law.
 
@@ -140,7 +140,7 @@ NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE DOES NOT INCREASE YOUR CHANCES
 
 10. DISPUTES. [ATTORNEY TO CONFIRM: governing law, venue/arbitration, state-specific sweepstakes registration (e.g., NY, FL) and any prize-value thresholds, and required disclosures.]
 
-11. SPONSOR / ADMINISTRATOR CONTACT. Sponsor: the business named in the contest listing. Administrator: [ASCENSION GROUP LLC / ENTITY NAME], [BUSINESS ADDRESS], [LEGAL CONTACT EMAIL].`;
+11. SPONSOR / ADMINISTRATOR CONTACT. Sponsor: the business named in the contest listing. Administrator: [LEGAL ENTITY NAME], [BUSINESS ADDRESS], [LEGAL CONTACT EMAIL].`;
 
 export const LEGAL_DOCS: Record<LegalDocKey, string> = {
   terms: TERMS_OF_SERVICE,

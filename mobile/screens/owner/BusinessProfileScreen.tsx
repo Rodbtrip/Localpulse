@@ -3,7 +3,7 @@ import { Text, StyleSheet, ScrollView, Alert, View, Pressable } from 'react-nati
 import { useFocusEffect } from '@react-navigation/native';
 import { colors, fonts, spacing } from '../../lib/theme';
 import { Button, Eyebrow, Field, Subtitle } from '../../components/ui';
-import { CATEGORIES, getMyShop, upsertShop, Shop } from '../../lib/api';
+import { CATEGORIES, getMyShop, sendWelcomeEmail, upsertShop, Shop } from '../../lib/api';
 import { parseLocalDateTime, DATE_HINT } from '../../lib/dates';
 
 export default function BusinessProfileScreen() {
@@ -89,6 +89,10 @@ export default function BusinessProfileScreen() {
       const wasNew = !shop;
       const fresh = await getMyShop();
       setShop(fresh);
+      // First time this business exists → send the welcome-aboard email with
+      // their printable QR code. Idempotent server-side, and a failure here
+      // must never block the save the owner just made.
+      if (wasNew) sendWelcomeEmail().catch(() => {});
       Alert.alert(
         wasNew ? 'Your business is set up' : 'Saved',
         wasNew

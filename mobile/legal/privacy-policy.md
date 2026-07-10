@@ -1,7 +1,7 @@
 LOCALPULSE PRIVACY POLICY
-Last updated: July 8, 2026
+Last updated: July 9, 2026
 
-This Privacy Policy explains how [ASCENSION GROUP LLC / LEGAL ENTITY NAME] ("LocalPulse," "we") collects, uses, and shares information when you use our app, website, and services.
+This Privacy Policy explains how [LEGAL ENTITY NAME] ("LocalPulse," "we") collects, uses, and shares information when you use our app, website, and services.
 
 1. INFORMATION WE COLLECT
 • Account information: your name, email address, password (stored as a secure hash by our infrastructure provider), and account role (member or business owner).
@@ -39,4 +39,4 @@ We use industry-standard safeguards, including encrypted connections, hashed cre
 We will post updates to this policy in the app and update the date above; material changes will be highlighted.
 
 10. CONTACT
-[ASCENSION GROUP LLC / ENTITY NAME] · [BUSINESS ADDRESS] · [PRIVACY CONTACT EMAIL]
+[LEGAL ENTITY NAME] · [BUSINESS ADDRESS] · [PRIVACY CONTACT EMAIL]
