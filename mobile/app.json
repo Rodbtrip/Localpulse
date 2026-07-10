@@ -30,6 +30,10 @@
         "backgroundColor": "#FAF7F2"
       }
     },
-    "icon": "./assets/icon.png"
+    "icon": "./assets/icon.png",
+    "plugins": [
+      "expo-font",
+      "expo-web-browser"
+    ]
   }
 }
