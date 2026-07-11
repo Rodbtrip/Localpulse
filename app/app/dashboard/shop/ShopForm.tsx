@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
-import { Button } from "@/components/ui/Button";
+import { useFormState } from "react-dom";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Input, Label, Textarea } from "@/components/ui/Input";
 import { CATEGORIES } from "@/lib/categories";
 
@@ -30,7 +30,7 @@ export default function ShopForm({
   shop: Shop;
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
-  const [state, formAction, pending] = useActionState(action, undefined);
+  const [state, formAction] = useFormState(action, undefined);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -166,9 +166,9 @@ export default function ShopForm({
       )}
       {state?.success && <p className="text-sm text-pulse">Saved.</p>}
 
-      <Button type="submit" disabled={pending}>
-        {pending ? "Saving…" : "Save shop profile"}
-      </Button>
+      <SubmitButton pendingText="Saving…">
+        Save shop profile
+      </SubmitButton>
     </form>
   );
 }

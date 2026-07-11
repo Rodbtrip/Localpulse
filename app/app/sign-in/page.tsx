@@ -1,14 +1,15 @@
 "use client";
 
-import { Suspense, useActionState } from "react";
+import { Suspense } from "react";
+import { useFormState } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "@/lib/actions/auth";
-import { Button } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Input, Label } from "@/components/ui/Input";
 
 function SignInForm() {
-  const [state, formAction, pending] = useActionState(signIn, undefined);
+  const [state, formAction] = useFormState(signIn, undefined);
   const searchParams = useSearchParams();
   // Cosmetic only — the actual post-login destination is derived from the
   // real DB role in signIn()/middleware, never from this client-supplied hint.
@@ -46,9 +47,9 @@ function SignInForm() {
             </p>
           )}
 
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending ? "Signing in…" : "Sign in"}
-          </Button>
+          <SubmitButton pendingText="Signing in…" className="w-full">
+            Sign in
+          </SubmitButton>
         </form>
 
         <p className="mt-6 text-sm text-ink/70">

@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormState } from "react-dom";
 import { redeemCode } from "@/lib/actions/redeem";
-import { Button } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Input, Label } from "@/components/ui/Input";
 import { Card, PulseCode } from "@/components/ui/Card";
 
 export default function RedeemPage() {
-  const [state, formAction, pending] = useActionState(redeemCode, undefined);
+  const [state, formAction] = useFormState(redeemCode, undefined);
 
   return (
     <div className="max-w-md">
@@ -52,9 +52,9 @@ export default function RedeemPage() {
             </p>
           )}
 
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending ? "Checking…" : "Redeem"}
-          </Button>
+          <SubmitButton pendingText="Checking…" className="w-full">
+            Redeem
+          </SubmitButton>
         </form>
       </Card>
 

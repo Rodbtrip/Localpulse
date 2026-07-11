@@ -1,14 +1,15 @@
 "use client";
 
-import { Suspense, useActionState } from "react";
+import { Suspense } from "react";
+import { useFormState } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signUp } from "@/lib/actions/auth";
-import { Button } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Input, Label } from "@/components/ui/Input";
 
 function SignUpForm() {
-  const [state, formAction, pending] = useActionState(signUp, undefined);
+  const [state, formAction] = useFormState(signUp, undefined);
   const searchParams = useSearchParams();
   const referralFromLink = searchParams.get("ref") ?? "";
 
@@ -60,9 +61,9 @@ function SignUpForm() {
             </p>
           )}
 
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending ? "Creating account…" : "Create account"}
-          </Button>
+          <SubmitButton pendingText="Creating account…" className="w-full">
+            Create account
+          </SubmitButton>
         </form>
 
         <p className="mt-6 text-sm text-ink/70">

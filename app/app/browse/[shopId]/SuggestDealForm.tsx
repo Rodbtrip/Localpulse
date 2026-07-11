@@ -1,14 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormState } from "react-dom";
 import Link from "next/link";
 import { submitSuggestion } from "@/lib/actions/suggestions";
-import { Button } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Textarea } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 
 export default function SuggestDealForm({ shopId }: { shopId: string }) {
-  const [state, formAction, pending] = useActionState(submitSuggestion, undefined);
+  const [state, formAction] = useFormState(submitSuggestion, undefined);
 
   if (state?.success) {
     return (
@@ -55,9 +55,9 @@ export default function SuggestDealForm({ shopId }: { shopId: string }) {
             to send this suggestion.
           </p>
         ) : (
-          <Button type="submit" variant="secondary" disabled={pending}>
-            {pending ? "Sending…" : "Send suggestion"}
-          </Button>
+          <SubmitButton pendingText="Sending…" variant="secondary">
+            Send suggestion
+          </SubmitButton>
         )}
       </form>
     </Card>

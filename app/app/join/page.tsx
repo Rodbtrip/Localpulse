@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormState } from "react-dom";
 import Link from "next/link";
 import { customerSignUp } from "@/lib/actions/customerAuth";
-import { Button } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Input, Label } from "@/components/ui/Input";
 
 export default function JoinPage() {
-  const [state, formAction, pending] = useActionState(customerSignUp, undefined);
+  const [state, formAction] = useFormState(customerSignUp, undefined);
 
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
@@ -46,9 +46,9 @@ export default function JoinPage() {
             </p>
           )}
 
-          <Button type="submit" disabled={pending} className="w-full">
-            {pending ? "Creating account…" : "Create account"}
-          </Button>
+          <SubmitButton pendingText="Creating account…" className="w-full">
+            Create account
+          </SubmitButton>
         </form>
 
         <p className="mt-6 text-sm text-ink/70">

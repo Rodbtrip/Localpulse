@@ -1,12 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormState } from "react-dom";
 import { createPromotion } from "@/lib/actions/promotions";
-import { Button } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Input, Label, Textarea } from "@/components/ui/Input";
 
 export default function NewPromotionPage() {
-  const [state, formAction, pending] = useActionState(createPromotion, undefined);
+  const [state, formAction] = useFormState(createPromotion, undefined);
 
   return (
     <div className="max-w-xl">
@@ -89,9 +89,9 @@ export default function NewPromotionPage() {
           </p>
         )}
 
-        <Button type="submit" disabled={pending}>
-          {pending ? "Creating…" : "Create promotion"}
-        </Button>
+        <SubmitButton pendingText="Creating…">
+          Create promotion
+        </SubmitButton>
       </form>
     </div>
   );
