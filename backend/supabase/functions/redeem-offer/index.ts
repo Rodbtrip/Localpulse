@@ -73,14 +73,24 @@ Deno.serve(async (req: Request) => {
       return json({ error: "You do not have permission to redeem this code" }, 403);
     }
 
-    const { error: updateError } = await adminClient
+    const { data: updatedRows, error: updateError } = await adminClient
       .from("claimed_offers")
       .update({ status: "redeemed", redeemed_at: new Date().toISOString() })
       .eq("id", claimedOffer.id)
-      .eq("status", "claimed"); // guards against a double-redeem race
+      .eq("status", "claimed") // guards against a double-redeem race
+      .select("id");
 
     if (updateError) {
       return json({ error: updateError.message }, 500);
+    }
+
+    // If zero rows came back, another request already redeemed this exact
+    // code between our SELECT above and this UPDATE — the .eq("status",
+    // "claimed") guard caused this UPDATE to match nothing. Stop here.
+    // Without this check, a second concurrent scan would silently insert
+    // a duplicate row into `redemptions` below and report false success.
+    if (!updatedRows || updatedRows.length === 0) {
+      return json({ error: "This code was already redeemed, moments ago." }, 409);
     }
 
     const { error: redemptionError } = await adminClient
