@@ -79,10 +79,14 @@ export default async function SuggestionsPage() {
                   <p className="text-ink">{s.suggestion}</p>
                   <p className="mt-2 text-xs text-ink/50">
                     {s.profiles?.full_name ?? "A customer"} · {timeAgo(s.created_at)}
-                    {" · "}
-                    <span className="font-semibold text-coral">
-                      {s.suggestion_votes?.[0]?.count ?? 0} votes
-                    </span>
+                    {s.featured && s.status !== "implemented" && (
+                      <>
+                        {" · "}
+                        <span className="font-semibold text-coral">
+                          Votes hidden until contest ends
+                        </span>
+                      </>
+                    )}
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-2">

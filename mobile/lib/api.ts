@@ -48,7 +48,11 @@ export interface DealSuggestion {
   featured: boolean;
   created_at: string;
   profiles: { full_name: string | null } | null;
-  vote_count: number;
+  // No vote_count here on purpose: shop owners are blind to vote tallies
+  // while a contest is live, same as customers (see migration
+  // backend/migration-owner-vote-blindness.sql). Final results are only
+  // visible after resolve_expired_suggestion_contests() marks a winner
+  // (status becomes WON_STATUS) and publishes the promotion.
 }
 
 export interface TopSuggestion {
@@ -324,16 +328,18 @@ export const WON_STATUS = 'implemented';
 export const OWNER_STATUSES = ['new', 'reviewed', 'declined'] as const;
 
 export async function listSuggestions(shopId: string): Promise<DealSuggestion[]> {
+  // Intentionally does not select suggestion_votes(count) — the owner
+  // RLS policy that used to allow this was removed so owners stay blind
+  // to vote tallies until the contest resolves, same as customers.
   const { data, error } = await supabase
     .from('deal_suggestions')
-    .select('id, suggestion, status, featured, created_at, profiles ( full_name ), suggestion_votes ( count )')
+    .select('id, suggestion, status, featured, created_at, profiles ( full_name )')
     .eq('shop_id', shopId)
     .order('created_at', { ascending: false });
   if (error) throw error;
   return (data ?? []).map((s: any) => ({
     ...s,
     profiles: Array.isArray(s.profiles) ? s.profiles[0] ?? null : s.profiles,
-    vote_count: s.suggestion_votes?.[0]?.count ?? 0,
   }));
 }
 

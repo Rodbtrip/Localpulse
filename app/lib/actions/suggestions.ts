@@ -53,13 +53,18 @@ export async function submitSuggestion(
 }
 
 // Used in the owner dashboard
+//
+// Intentionally does not select suggestion_votes(count) — the owner RLS
+// policy that used to allow this was removed so owners stay blind to
+// vote tallies until the contest resolves, same as customers (see
+// backend/migration-owner-vote-blindness.sql).
 export async function getShopSuggestions(shopId: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("deal_suggestions")
     .select(
-      "id, suggestion, status, featured, created_at, profiles ( full_name ), suggestion_votes ( count )"
+      "id, suggestion, status, featured, created_at, profiles ( full_name )"
     )
     .eq("shop_id", shopId)
     .order("created_at", { ascending: false });

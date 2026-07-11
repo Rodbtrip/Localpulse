@@ -119,8 +119,10 @@ export default function SuggestionsScreen() {
               <View style={{ flex: 1, paddingRight: 10 }}>
                 <Text style={styles.title}>{item.suggestion}</Text>
                 <Text style={styles.meta}>
-                  {item.profiles?.full_name ?? 'Customer'} · {ago(item.created_at)} ·{' '}
-                  <Text style={{ color: colors.coral, fontFamily: fonts.bodyBold }}>{item.vote_count} votes</Text>
+                  {item.profiles?.full_name ?? 'Customer'} · {ago(item.created_at)}
+                  {item.featured && !won ? (
+                    <Text style={{ color: colors.coral, fontFamily: fonts.bodyBold }}> · Votes hidden until contest ends</Text>
+                  ) : null}
                 </Text>
               </View>
               <View style={{ alignItems: 'flex-end', gap: 8 }}>

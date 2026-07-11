@@ -1,0 +1,43 @@
+-- LocalPulse — Migration: make shop owners blind to vote tallies too
+-- Run any time; safe to re-run (drop-if-exists).
+--
+-- Originally, migration-suggestion-votes.sql added a policy letting a
+-- shop owner SELECT rows from suggestion_votes for their own shop's
+-- suggestions, so the owner dashboard could show a live "X votes" count.
+-- That policy predates the blind-poll rework in migration-blind-poll.sql,
+-- which made the customer-facing view blind (get_top_suggestions() no
+-- longer returns vote_count to customers) but never touched this
+-- owner-side policy — so the shop owner was the one remaining party who
+-- could see live vote tallies while a contest was still open, undermining
+-- the point of a blind vote.
+--
+-- This drops that policy. After this runs, nobody — customer or owner —
+-- can read live vote counts from suggestion_votes directly. The only
+-- code that still reads the table is the SECURITY DEFINER functions
+-- (finalize_suggestion_win, award_suggestion_prize,
+-- resolve_expired_suggestion_contests, and the notification loops in
+-- migration-notify-voters.sql), which run with elevated privileges and
+-- bypass RLS entirely — so contest resolution and winner notification
+-- are unaffected by this change.
+--
+-- Companion app changes (already made, ship together with this):
+--   mobile/lib/api.ts            — listSuggestions() no longer selects
+--                                   suggestion_votes(count); DealSuggestion
+--                                   no longer has a vote_count field
+--   mobile/screens/owner/SuggestionsScreen.tsx
+--                                 — "X votes" label replaced with "Votes
+--                                   hidden until contest ends" for
+--                                   featured/live suggestions
+--   app/lib/actions/suggestions.ts
+--                                 — getShopSuggestions() no longer selects
+--                                   suggestion_votes(count)
+--   app/app/dashboard/suggestions/page.tsx
+--                                 — same "hidden until contest ends" swap
+--
+-- Do NOT deploy this SQL without the four file changes above already
+-- committed — deploying the SQL alone is safe (RLS just returns nothing),
+-- but deploying it without the code changes leaves the owner screens
+-- silently rendering "0 votes" instead of "hidden until contest ends",
+-- which reads as a bug rather than an intentional blind period.
+
+drop policy if exists "Shop owners can view votes for own shop's suggestions" on suggestion_votes;
